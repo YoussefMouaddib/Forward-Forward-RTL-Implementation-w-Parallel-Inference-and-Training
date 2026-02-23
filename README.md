@@ -1,0 +1,1 @@
+# Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training
