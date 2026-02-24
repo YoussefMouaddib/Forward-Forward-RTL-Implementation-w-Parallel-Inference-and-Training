@@ -491,7 +491,12 @@ module neural_network_top #(
     logic                          pe_weight_we;
     logic [DATA_WIDTH-1:0]         pe_weight_wdata;
     logic [DATA_WIDTH-1:0]         pe_weight_rdata;
+    logic [$clog2(L1_INPUT_SIZE)-1:0] pe_active_input_size;
 
+    assign pe_active_input_size = pe_layer_sel ? 
+                              L2_INPUT_SIZE[($clog2(L1_INPUT_SIZE)-1):0] : 
+                              L1_INPUT_SIZE[($clog2(L1_INPUT_SIZE)-1):0];
+    
     // Route PE BRAM port B to correct layer
     always_comb begin
         // Default tie-off
@@ -581,7 +586,8 @@ module neural_network_top #(
         .weight_en_b    (pe_weight_en),
         .weight_we_b    (pe_weight_we),
         .weight_wdata_b (pe_weight_wdata),
-        .weight_rdata_b (pe_weight_rdata)
+        .weight_rdata_b (pe_weight_rdata),
+        .active_input_size (pe_active_input_size)
     );
 
     // ═════════════════════════════════════════════
