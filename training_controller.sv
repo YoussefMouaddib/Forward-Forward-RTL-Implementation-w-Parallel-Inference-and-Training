@@ -46,6 +46,15 @@
 //                   pulsed when l2_rn_done + goodness_l2_done
 //                   carries: l2 goodness scalar, l2 shadow valid
 
+/*
+The two FSMs share zero state. The forward FSM owns everything related to inference — MAC units, relu_norm, goodness calculators, sample loading, label injection. The update FSM owns everything related to learning — the plasticity engine, which layer to update, which pass it is. They communicate through exactly four wires: l1_data_ready, l2_data_ready, l1_data_ack, l2_data_ack. That's the entire interface between the two threads of control.
+The forward FSM never waits for the PE. After firing l1_data_ready it immediately starts L2 MAC. After firing l2_data_ready it immediately moves to the next pass or next sample. It doesn't know or care when the PE finishes. This is what makes it truly non-blocking.
+The update FSM never touches inference resources. It has no connection to MAC units, relu_norm, or goodness calculators. It only drives pe_start, pe_layer_sel, pe_is_positive, and pe_goodness. The hardware blocks it controls operate on shadow buffers that the forward FSM no longer touches.
+The l1_data_ready sticky flag is the critical synchronization point. It gets set by the forward FSM when goodness_l1 completes. It stays high until the update FSM acknowledges it with l1_data_ack. This handles the race where the update FSM might still be in UPD_WAIT_L1 when the flag arrives, or might arrive at UPD_WAIT_L1 after the flag was already set.
+The FWD_L2_MAC state starts L2 MAC immediately without waiting for goodness_l1 to finish. This is correct because goodness takes only 258 cycles and L2 MAC takes 131,000 cycles — goodness is guaranteed to complete before L2 MAC finishes. The forward FSM watches for goodness_l1_done while sitting in FWD_L2_MAC and latches the value when it arrives.
+There is one duplicate state label FWD_L2_RN in the code which you will need to merge — I split the logic across two case entries by mistake. Combine them into one state that handles both the l2_mac_done transition and the late goodness_l1_done catch.
+*/
+
 module training_controller #(
     parameter NUM_SAMPLES  = 7000,
     parameter INPUT_SIZE   = 784,
