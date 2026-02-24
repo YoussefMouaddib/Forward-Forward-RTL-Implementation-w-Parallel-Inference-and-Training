@@ -70,11 +70,13 @@ module neural_network_top #(
     logic        l1_mac_start,   l1_mac_done;
     logic        l1_rn_start,    l1_rn_done;
     logic        l1_shadow_capture;
+    logic [DATA_WIDTH-1:0] l1_shadow_out [0:L1_NUM_NEURONS-1];
 
     // Layer 2 control
     logic        l2_mac_start,   l2_mac_done;
     logic        l2_rn_start,    l2_rn_done;
     logic        l2_shadow_capture;
+    logic [DATA_WIDTH-1:0] l2_shadow_out [0:L2_NUM_NEURONS-1];
 
     // Goodness control
     logic        goodness_l1_start, goodness_l1_done;
@@ -230,7 +232,7 @@ module neural_network_top #(
         .rdata_b        (l1_act_rdata_b),
         .clear          (l1_act_clear),
         .valid          (l1_act_valid),
-        .shadow_capture (l1_shadow_capture)
+        .shadow_out (l1_shadow_out)
     );
 
     // ═════════════════════════════════════════════
@@ -267,7 +269,7 @@ module neural_network_top #(
         .rdata_b        (l2_act_rdata_b),
         .clear          (l2_act_clear),
         .valid          (l2_act_valid),
-        .shadow_capture (l2_shadow_capture)
+        .shadow_out (l2_shadow_out)
     );
 
     // ═════════════════════════════════════════════
@@ -382,7 +384,7 @@ module neural_network_top #(
         .rst_n       (rst_n),
         .start       (l2_mac_start),
         .done        (l2_mac_done),
-        .act_in      (l1_act_rdata_a),   // NOTE: see wiring note below
+        .act_in      (L1_shadow_out),   
         .weight_addr (l2_weight_addr_a),
         .weight_en   (l2_weight_en_a),
         .weight_rdata(l2_weight_rdata_a),
@@ -449,7 +451,7 @@ module neural_network_top #(
         .rst_n       (rst_n),
         .start       (goodness_l1_start),
         .done        (goodness_l1_done),
-        .act_data    (l1_act_buf.shadow_buf),  // read shadow directly
+        .act_data    (l1_shadow_out),  // read shadow directly
         .goodness_out(goodness_l1_val)
     );
 
@@ -463,7 +465,7 @@ module neural_network_top #(
         .rst_n       (rst_n),
         .start       (goodness_l2_start),
         .done        (goodness_l2_done),
-        .act_data    (l2_act_buf.shadow_buf),
+        .act_data    (l2_shadow_out),
         .goodness_out(goodness_l2_val)
     );
 
@@ -474,12 +476,12 @@ module neural_network_top #(
     //
     // When updating L1:
     //   input_acts  = input_shadow (image that fed L1)
-    //   output_acts = l1_act_buf.shadow_buf
+    //   output_acts = l1_shadow_out
     //   weight BRAM port B = l1_wbram
     //
     // When updating L2:
-    //   input_acts  = l1_act_buf.shadow_buf (L1 output that fed L2)
-    //   output_acts = l2_act_buf.shadow_buf
+    //   input_acts  = l1_shadow_out (L1 output that fed L2)
+    //   output_acts = l2_shadow_out
     //   weight BRAM port B = l2_wbram
     // ═════════════════════════════════════════════
 
@@ -537,7 +539,7 @@ module neural_network_top #(
                     // L1 has 256 neurons, L2 input size is 256
                     // Only index 0..255 valid here
                     pe_input_acts[gi] = (gi < L2_INPUT_SIZE) ?
-                                        l1_act_buf.shadow_buf[gi] :
+                                        l1_shadow_out[gi] :
                                         '0;
             end
         end
@@ -548,9 +550,9 @@ module neural_network_top #(
         for (gi = 0; gi < L2_NUM_NEURONS; gi++) begin : pe_outact_mux
             always_comb begin
                 if (!pe_layer_sel)
-                    pe_output_acts[gi] = l1_act_buf.shadow_buf[gi];
+                    pe_output_acts[gi] = l1_shadow_out[gi];
                 else
-                    pe_output_acts[gi] = l2_act_buf.shadow_buf[gi];
+                    pe_output_acts[gi] = l2_shadow_out[gi];
             end
         end
     endgenerate
