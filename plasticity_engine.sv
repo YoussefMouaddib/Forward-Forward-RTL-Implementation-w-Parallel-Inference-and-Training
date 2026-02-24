@@ -56,7 +56,8 @@ module plasticity_engine #(
     output logic                          weight_en_b,
     output logic                          weight_we_b,
     output logic [DATA_WIDTH-1:0]         weight_wdata_b,
-    input  logic [DATA_WIDTH-1:0]         weight_rdata_b
+    input  logic [DATA_WIDTH-1:0]         weight_rdata_b,
+    input logic [$clog2(L1_INPUT_SIZE)-1:0] active_input_size,
 );
 
     // ─────────────────────────────────────────────
@@ -249,7 +250,7 @@ module plasticity_engine #(
                     weight_wdata_b <= new_weight;
 
                     // Advance counters
-                    if (weight_idx == INPUT_SIZE - 1) begin
+                    if (weight_idx == active_input_size - 1) begin
                         weight_idx <= '0;
                         if (neuron_idx == NUM_NEURONS - 1) begin
                             state <= DONE;
