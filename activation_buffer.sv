@@ -36,7 +36,8 @@ module activation_buffer #(
     // Valid flag — asserted when buffer holds complete layer output
     // Deasserted at start of new forward pass
     input  logic                              clear,
-    output logic                              valid
+    output logic                              valid,
+    output logic [DATA_WIDTH-1:0] shadow_out [0:NUM_NEURONS-1]
 );
 
     // ─────────────────────────────────────────────
@@ -66,6 +67,8 @@ module activation_buffer #(
 
     // Read port B — combinatorial, zero latency
     assign rdata_b = buf[raddr_b];
+
+    assign shadow_out = buf;
 
     // ─────────────────────────────────────────────
     // VALID TRACKING
