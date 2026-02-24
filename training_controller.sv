@@ -368,18 +368,22 @@ module training_controller #(
                 end
 
                 FWD_L2_RN: begin
+                    // Track PE_L1 finishing if it arrives here
+                    if (pe_done)
+                        pe_l1_finished <= 1'b1;
+                
+                    // Start L2 relu_norm as soon as L2 MAC done
                     if (l2_mac_done) begin
                         l2_rn_start <= 1'b1;
-                        fwd_state   <= FWD_L2_GOODNESS;
                     end
-                    // Also catch goodness_l1_done if it arrives late
+                
+                    // Catch late goodness_l1_done if it hasn't fired yet
                     if (goodness_l1_done && !l1_data_ready) begin
                         latched_goodness_l1 <= goodness_l1_val;
                         l1_data_ready       <= 1'b1;
                     end
-                end
-
-                FWD_L2_RN: begin
+                
+                    // Move to goodness once relu_norm completes
                     if (l2_rn_done) begin
                         l2_shadow_capture <= 1'b1;
                         goodness_l2_start <= 1'b1;
