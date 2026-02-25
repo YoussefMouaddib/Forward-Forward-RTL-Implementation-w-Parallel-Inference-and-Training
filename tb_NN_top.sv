@@ -66,8 +66,8 @@ module tb_top;
     // Loaded from Python-generated .mem files
     // Sized for NUM_SAMPLES images
     // ─────────────────────────────────────────────
-    logic [DATA_WIDTH-1:0] sample_mem [0:(NUM_SAMPLES * L1_INPUT_SIZE)-1];
-    logic [3:0]            label_mem  [0:NUM_SAMPLES-1];
+    logic [0:(NUM_SAMPLES * L1_INPUT_SIZE)-1][DATA_WIDTH-1:0] sample_mem ;
+    logic [0:NUM_SAMPLES-1][3:0]            label_mem  ;
 
     // DUT memory interface wires
     logic [$clog2(NUM_SAMPLES * L1_INPUT_SIZE)-1:0] sample_addr;
