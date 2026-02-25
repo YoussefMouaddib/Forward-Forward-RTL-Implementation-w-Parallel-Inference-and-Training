@@ -26,7 +26,7 @@ module mac_unit #(
 
     // Input activation buffer — from previous layer or input image
     // Addressed by weight_idx during MAC, read combinatorially
-    input  logic [DATA_WIDTH-1:0]        act_in  [0:INPUT_SIZE-1],
+    input  logic [0:INPUT_SIZE-1][DATA_WIDTH-1:0]        act_in  ,
 
     // Weight BRAM port A interface
     output logic [$clog2(DEPTH)-1:0]     weight_addr,
