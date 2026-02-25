@@ -384,7 +384,7 @@ module neural_network_top #(
         .rst_n       (rst_n),
         .start       (l2_mac_start),
         .done        (l2_mac_done),
-        .act_in      (l2_shadow_out),   
+        .act_in      (l1_shadow_out),   
         .weight_addr (l2_weight_addr_a),
         .weight_en   (l2_weight_en_a),
         .weight_rdata(l2_weight_rdata_a),
