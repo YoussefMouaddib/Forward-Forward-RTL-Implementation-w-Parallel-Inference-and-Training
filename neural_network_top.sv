@@ -491,7 +491,7 @@ module neural_network_top #(
     logic                          pe_weight_we;
     logic [DATA_WIDTH-1:0]         pe_weight_wdata;
     logic [DATA_WIDTH-1:0]         pe_weight_rdata;
-    logic [$clog2(L1_INPUT_SIZE)-1:0] pe_active_input_size;
+    logic [11:0] pe_active_input_size;
 
     assign pe_active_input_size = pe_layer_sel ? 
                               L2_INPUT_SIZE[($clog2(L1_INPUT_SIZE)-1):0] : 
