@@ -138,7 +138,8 @@ module training_controller #(
     logic [3:0]  current_label;
     logic [3:0]  wrong_label;
     logic        is_positive_pass;   // forward FSM tracks which pass
-
+    logic pe_l1_finished;
+    
     always_comb begin
         if (current_label == 4'd9)
             wrong_label = 4'd0;
