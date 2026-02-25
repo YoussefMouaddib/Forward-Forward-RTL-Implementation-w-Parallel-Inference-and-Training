@@ -32,7 +32,7 @@ module weight_bram #(
     // Memory array — tools infer BRAM from this pattern
     // Xilinx: infers RAMB36E2
     // Intel:  infers M20K blocks
-    logic [DATA_WIDTH-1:0] mem [0:DEPTH-1];
+    logic [0:DEPTH-1][DATA_WIDTH-1:0] mem ;
 
     // Port A — synchronous read
     always_ff @(posedge clk_a) begin
