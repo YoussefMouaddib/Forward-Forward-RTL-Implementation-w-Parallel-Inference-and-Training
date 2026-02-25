@@ -37,7 +37,7 @@ module activation_buffer #(
     // Deasserted at start of new forward pass
     input  logic                              clear,
     output logic                              valid,
-    output logic [DATA_WIDTH-1:0] shadow_out [0:NUM_NEURONS-1]
+    output logic [0:NUM_NEURONS-1][DATA_WIDTH-1:0] shadow_out 
 );
 
     // ─────────────────────────────────────────────
@@ -45,7 +45,7 @@ module activation_buffer #(
     // 256 x 32-bit registers
     // Tools will implement as distributed RAM or flip-flops
     // ─────────────────────────────────────────────
-    logic [DATA_WIDTH-1:0] buffer [0:NUM_NEURONS-1];
+    logic [0:NUM_NEURONS-1][DATA_WIDTH-1:0] buffer ;
 
     // Write port — synchronous
     always_ff @(posedge clk or negedge rst_n) begin
