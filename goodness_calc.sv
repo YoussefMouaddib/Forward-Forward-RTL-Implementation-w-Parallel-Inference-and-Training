@@ -27,7 +27,7 @@ module goodness_calc #(
 
     // Activation buffer read port
     // Combinatorial read — zero latency
-    input  logic [DATA_WIDTH-1:0]             act_data [0:NUM_NEURONS-1],
+    input  logic [0:NUM_NEURONS-1][DATA_WIDTH-1:0]             act_data ,
 
     // Goodness output — valid when done pulses
     output logic [DATA_WIDTH-1:0]             goodness_out
