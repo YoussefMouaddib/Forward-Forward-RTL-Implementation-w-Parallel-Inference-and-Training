@@ -57,7 +57,7 @@ module plasticity_engine #(
     output logic                          weight_we_b,
     output logic [DATA_WIDTH-1:0]         weight_wdata_b,
     input  logic [DATA_WIDTH-1:0]         weight_rdata_b,
-    input logic [$clog2(L1_INPUT_SIZE)-1:0] active_input_size,
+    input logic [$clog2(L1_INPUT_SIZE)-1:0] active_input_size
 );
 
     // ─────────────────────────────────────────────
