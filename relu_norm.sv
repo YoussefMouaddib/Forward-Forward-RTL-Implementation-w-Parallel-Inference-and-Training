@@ -77,7 +77,7 @@ module relu_norm #(
     // Holds post-ReLU values before normalization
     // Same register file pattern as activation_buffer
     // ─────────────────────────────────────────────
-    logic signed [DATA_WIDTH-1:0] post_relu [0:NUM_NEURONS-1];
+    logic signed [0:NUM_NEURONS-1][DATA_WIDTH-1:0] post_relu ;
 
     // ─────────────────────────────────────────────
     // SUM ACCUMULATOR FOR MEAN COMPUTATION
