@@ -45,7 +45,7 @@ module activation_buffer #(
     // 256 x 32-bit registers
     // Tools will implement as distributed RAM or flip-flops
     // ─────────────────────────────────────────────
-    logic [DATA_WIDTH-1:0] buf [0:NUM_NEURONS-1];
+    logic [DATA_WIDTH-1:0] buffer [0:NUM_NEURONS-1];
 
     // Write port — synchronous
     always_ff @(posedge clk or negedge rst_n) begin
@@ -53,22 +53,22 @@ module activation_buffer #(
             // Reset all activations to zero
             integer i;
             for (i = 0; i < NUM_NEURONS; i++)
-                buf[i] <= '0;
+                buffer[i] <= '0;
         end
         else if (we) begin
-            buf[waddr] <= wdata;
+            buffer[waddr] <= wdata;
         end
     end
 
     // Read port A — combinatorial, zero latency
     // MAC unit needs this because it reads act_in[weight_idx]
     // directly as an array — see mac_unit.sv act_in port
-    assign rdata_a = buf[raddr_a];
+    assign rdata_a = buffer[raddr_a];
 
     // Read port B — combinatorial, zero latency
-    assign rdata_b = buf[raddr_b];
+    assign rdata_b = buffer[raddr_b];
 
-    assign shadow_out = buf;
+    assign shadow_out = buffer;
 
     // ─────────────────────────────────────────────
     // VALID TRACKING
