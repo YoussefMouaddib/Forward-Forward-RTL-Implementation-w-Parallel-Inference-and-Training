@@ -117,10 +117,10 @@ module tb_top;
     // ─────────────────────────────────────────────
     task load_weights();
         $display("[TB] Loading initial weights from mem_files/...");
-        $readmemh("mem_files/initial_layer1_w.mem", dut.l1_wbram.mem);
-        $readmemh("mem_files/initial_layer2_w.mem", dut.l2_wbram.mem);
-        $readmemh("mem_files/initial_layer1_b.mem", dut.l1_bias);
-        $readmemh("mem_files/initial_layer2_b.mem", dut.l2_bias);
+        $readmemh("initial_layer1_w.mem", dut.l1_wbram.mem);
+        $readmemh("initial_layer2_w.mem", dut.l2_wbram.mem);
+        $readmemh("initial_layer1_b.mem", dut.l1_bias);
+        $readmemh("initial_layer2_b.mem", dut.l2_bias);
         $display("[TB] Weights loaded.");
     endtask
 
@@ -248,8 +248,8 @@ module tb_top;
         // Load first NUM_SAMPLES images from full dataset mem file
         // Python should export samples_flat.mem with all pixels
         // in row-major order: s0p0, s0p1...s0p783, s1p0...
-        $readmemh("mem_files/samples_flat.mem", sample_mem);
-        $readmemh("mem_files/labels.mem",       label_mem);
+        $readmemh("samples_flat.mem", sample_mem);
+        $readmemh("labels.mem",       label_mem);
         $display("[TB] Samples loaded.");
     endtask
 
