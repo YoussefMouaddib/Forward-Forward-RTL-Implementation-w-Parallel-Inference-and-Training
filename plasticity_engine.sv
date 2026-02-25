@@ -45,11 +45,11 @@ module plasticity_engine #(
 
     // Input activations — layer N input (x in update rule)
     // Combinatorial read from activation_buffer
-    input  logic [DATA_WIDTH-1:0]         input_acts  [0:INPUT_SIZE-1],
+    input  logic [0:INPUT_SIZE-1][DATA_WIDTH-1:0]         input_acts  ,
 
     // Output activations — layer N output (y in update rule)
     // Combinatorial read from activation_buffer
-    input  logic [DATA_WIDTH-1:0]         output_acts [0:NUM_NEURONS-1],
+    input  logic  [0:NUM_NEURONS-1][DATA_WIDTH-1:0]         output_acts,
 
     // Weight BRAM port B interface
     output logic [$clog2(DEPTH)-1:0]      weight_addr_b,
