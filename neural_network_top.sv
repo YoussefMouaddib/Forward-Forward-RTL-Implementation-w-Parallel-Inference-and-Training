@@ -70,13 +70,13 @@ module neural_network_top #(
     logic        l1_mac_start,   l1_mac_done;
     logic        l1_rn_start,    l1_rn_done;
     logic        l1_shadow_capture;
-    logic [DATA_WIDTH-1:0] l1_shadow_out [0:L1_NUM_NEURONS-1];
+    logic [0:L1_NUM_NEURONS-1][DATA_WIDTH-1:0] l1_shadow_out ;
 
     // Layer 2 control
     logic        l2_mac_start,   l2_mac_done;
     logic        l2_rn_start,    l2_rn_done;
     logic        l2_shadow_capture;
-    logic [DATA_WIDTH-1:0] l2_shadow_out [0:L2_NUM_NEURONS-1];
+    logic [0:L2_NUM_NEURONS-1][DATA_WIDTH-1:0] l2_shadow_out ;
 
     // Goodness control
     logic        goodness_l1_start, goodness_l1_done;
@@ -102,8 +102,8 @@ module neural_network_top #(
     // ═════════════════════════════════════════════
 
     // Live input buffer — written by training controller
-    logic [DATA_WIDTH-1:0] input_buf      [0:L1_INPUT_SIZE-1];
-    logic [DATA_WIDTH-1:0] input_shadow   [0:L1_INPUT_SIZE-1];
+    logic [0:L1_INPUT_SIZE-1][DATA_WIDTH-1:0] input_buf      ;
+    logic [0:L1_INPUT_SIZE-1][DATA_WIDTH-1:0] input_shadow   ;
 
     // Write to live buffer
     always_ff @(posedge clk or negedge rst_n) begin
@@ -281,7 +281,7 @@ module neural_network_top #(
 
     // Intermediate raw MAC output buffer
     // Written by L1 MAC, read by L1 relu_norm
-    logic [DATA_WIDTH-1:0] l1_raw_buf [0:L1_NUM_NEURONS-1];
+    logic [0:L1_NUM_NEURONS-1][DATA_WIDTH-1:0] l1_raw_buf ;
 
     logic [$clog2(L1_NUM_NEURONS)-1:0] l1_raw_waddr;
     logic        l1_raw_we;
@@ -318,7 +318,7 @@ module neural_network_top #(
     // ═════════════════════════════════════════════
 
     // L1 bias ROM — initialized from b1.mem in testbench
-    logic [DATA_WIDTH-1:0] l1_bias [0:L1_NUM_NEURONS-1];
+    logic [0:L1_NUM_NEURONS-1][DATA_WIDTH-1:0] l1_bias ;
 
     logic [$clog2(L1_NUM_NEURONS)-1:0] l1_rn_bias_addr;
     logic        l1_rn_bias_en;
@@ -360,7 +360,7 @@ module neural_network_top #(
     // Writes raw results to l2_raw_buf
     // ═════════════════════════════════════════════
 
-    logic [DATA_WIDTH-1:0] l2_raw_buf [0:L2_NUM_NEURONS-1];
+    logic [0:L2_NUM_NEURONS-1][DATA_WIDTH-1:0] l2_raw_buf ;
     logic [$clog2(L2_NUM_NEURONS)-1:0] l2_raw_waddr;
     logic        l2_raw_we;
     logic [DATA_WIDTH-1:0] l2_raw_wdata;
@@ -397,7 +397,7 @@ module neural_network_top #(
     // LAYER 2 RELU NORM
     // ═════════════════════════════════════════════
 
-    logic [DATA_WIDTH-1:0] l2_bias [0:L2_NUM_NEURONS-1];
+    logic [0:L2_NUM_NEURONS-1][DATA_WIDTH-1:0] l2_bias ;
 
     logic [$clog2(L2_NUM_NEURONS)-1:0] l2_rn_bias_addr;
     logic        l2_rn_bias_en;
@@ -530,8 +530,8 @@ module neural_network_top #(
 
     // PE input_acts and output_acts mux
     // PE sees flat arrays — mux selects which shadow to expose
-    logic [DATA_WIDTH-1:0] pe_input_acts  [0:L1_INPUT_SIZE-1];
-    logic [DATA_WIDTH-1:0] pe_output_acts [0:L2_NUM_NEURONS-1];
+    logic [0:L1_INPUT_SIZE-1][DATA_WIDTH-1:0] pe_input_acts  ;
+    logic [0:L2_NUM_NEURONS-1][DATA_WIDTH-1:0] pe_output_acts ;
 
     // Input acts mux: L1 update needs image input, L2 update needs L1 acts
     generate
