@@ -266,21 +266,21 @@ module tb_top;
 
     always_ff @(posedge clk) begin
         // Detect PE starting on layer 1
-        if (pe_start && !pe_layer_sel && !pe_l1_started) begin
+        if (dut.pe_start && !dut.pe_layer_sel && !pe_l1_started) begin
             pe_l1_start_time <= $time;
             pe_l1_started    <= 1'b1;
         end
-        if (pe_done && pe_l1_started && !pe_layer_sel) begin
+        if (dut.pe_done && pe_l1_started && !dut.pe_layer_sel) begin
             pe_l1_end_time <= $time;
             pe_l1_started  <= 1'b0;
         end
 
         // Detect L2 MAC starting
-        if (l2_mac_start && !l2_mac_started) begin
+        if (dut.l2_mac_start && !l2_mac_started) begin
             l2_mac_start_time <= $time;
             l2_mac_started    <= 1'b1;
         end
-        if (l2_mac_done && l2_mac_started) begin
+        if (dut.l2_mac_done && l2_mac_started) begin
             l2_mac_end_time <= $time;
             l2_mac_started  <= 1'b0;
 
