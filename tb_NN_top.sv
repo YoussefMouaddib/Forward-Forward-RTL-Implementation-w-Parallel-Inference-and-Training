@@ -320,10 +320,6 @@ module tb_top;
 
         // Initialize tracking variables
         checkpoint_num  <= 0;
-        sample_count    <= 0;
-        pe_l1_started   <= 1'b0;
-        l2_mac_started  <= 1'b0;
-        overlap_confirmed <= 1'b0;
         in_positive_pass  <= 1'b1;
 
         // Initialize signals
