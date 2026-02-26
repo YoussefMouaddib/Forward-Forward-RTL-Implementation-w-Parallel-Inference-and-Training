@@ -117,12 +117,33 @@ module tb_top;
     // ─────────────────────────────────────────────
     task load_weights();
         $display("[TB] Loading initial weights from mem_files/...");
-        $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/initial_layer1_w.mem", dut.l1_wbram.mem);
+        /*$readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/initial_layer1_w.mem", dut.l1_wbram.mem);
         $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/initial_layer2_w.mem", dut.l2_wbram.mem);
         $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/initial_layer1_b.mem", dut.l1_bias);
         $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/initial_layer2_b.mem", dut.l2_bias);
+        */
         $display("[TB] Weights loaded.");
     endtask
+    initial begin
+        integer i;
+        for (i = 0; i < NUM_SAMPLES * L1_INPUT_SIZE; i++)
+            sample_mem[i] = 32'sh00008000;  // 0.5 in Q16.16
+        for (i = 0; i < NUM_SAMPLES; i++)
+            label_mem[i] = 4'd3;            // all samples labeled as digit 3
+    end
+    initial begin
+        // Initialize weights to small fixed value instead of loading from file
+        integer i;
+        for (i = 0; i < L1_DEPTH; i++)
+            dut.l1_wbram.mem[i] = 32'sh00000100;  // 0.00390625 in Q16.16
+        for (i = 0; i < L2_DEPTH; i++)
+            dut.l2_wbram.mem[i] = 32'sh00000100;
+        for (i = 0; i < L1_NUM_NEURONS; i++)
+            dut.l1_bias[i] = 32'sh00000000;
+        for (i = 0; i < L2_NUM_NEURONS; i++)
+            dut.l2_bias[i] = 32'sh00000000;
+    end
+    
 
     // ─────────────────────────────────────────────
     // WEIGHT CHECKPOINT
@@ -248,8 +269,9 @@ module tb_top;
         // Load first NUM_SAMPLES images from full dataset mem file
         // Python should export samples_flat.mem with all pixels
         // in row-major order: s0p0, s0p1...s0p783, s1p0...
-        $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/samples_flat.mem", sample_mem, 0, (NUM_SAMPLES * L1_INPUT_SIZE) - 1);
+        /*$readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/samples_flat.mem", sample_mem, 0, (NUM_SAMPLES * L1_INPUT_SIZE) - 1);
         $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/labels.mem", label_mem, 0, NUM_SAMPLES - 1);
+        */
         $display("[TB] Samples loaded.");
         $display("[TB] Samples loaded.");
     endtask
