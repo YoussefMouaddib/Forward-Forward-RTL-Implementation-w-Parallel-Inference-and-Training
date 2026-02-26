@@ -126,22 +126,43 @@ module tb_top;
     endtask
     initial begin
         integer i;
-        for (i = 0; i < NUM_SAMPLES * L1_INPUT_SIZE; i++)
-            sample_mem[i] = 32'sh00008000;  // 0.5 in Q16.16
-        for (i = 0; i < NUM_SAMPLES; i++)
-            label_mem[i] = 4'd3;            // all samples labeled as digit 3
-    end
-    initial begin
-        // Initialize weights to small fixed value instead of loading from file
-        integer i;
-        for (i = 0; i < L1_DEPTH; i++)
-            dut.l1_wbram.mem[i] = 32'sh00000100;  // 0.00390625 in Q16.16
-        for (i = 0; i < L2_DEPTH; i++)
-            dut.l2_wbram.mem[i] = 32'sh00000100;
+        // Weights — small random-ish values using bit patterns
+        // Alternating positive and negative to simulate He initialization
+        for (i = 0; i < L1_DEPTH; i++) begin
+            case (i % 4)
+                0: dut.l1_wbram.mem[i] = 32'sh00000200;   //  0.0078
+                1: dut.l1_wbram.mem[i] = -32'sh00000180;  // -0.0059
+                2: dut.l1_wbram.mem[i] = 32'sh00000100;   //  0.0039
+                3: dut.l1_wbram.mem[i] = -32'sh00000280;  // -0.0098
+            endcase
+        end
+        for (i = 0; i < L2_DEPTH; i++) begin
+            case (i % 4)
+                0: dut.l2_wbram.mem[i] = 32'sh00000180;
+                1: dut.l2_wbram.mem[i] = -32'sh00000200;
+                2: dut.l2_wbram.mem[i] = 32'sh00000280;
+                3: dut.l2_wbram.mem[i] = -32'sh00000100;
+            endcase
+        end
+    
+        // Biases — zero
         for (i = 0; i < L1_NUM_NEURONS; i++)
             dut.l1_bias[i] = 32'sh00000000;
         for (i = 0; i < L2_NUM_NEURONS; i++)
             dut.l2_bias[i] = 32'sh00000000;
+    
+        // Sample memory — varying pixel values to simulate different images
+        // Even samples brighter, odd samples darker
+        for (i = 0; i < NUM_SAMPLES * L1_INPUT_SIZE; i++) begin
+            if (i % 2 == 0)
+                sample_mem[i] = 32'sh00008000;   // 0.5
+            else
+                sample_mem[i] = 32'sh00003000;   // 0.19
+        end
+    
+        // Labels — cycle through 0-9 so network sees all classes
+        for (i = 0; i < NUM_SAMPLES; i++)
+            label_mem[i] = i % 10;
     end
     
 
