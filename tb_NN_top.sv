@@ -457,9 +457,6 @@ module tb_top;
     // Captures key signals for ModelSim waveform view
     // Add signals you want to watch here
     // ─────────────────────────────────────────────
-    initial begin
-        $dumpfile("ff_sim.vcd");
-        $dumpvars(0, tb_top);
-    end
+    
 
 endmodule
