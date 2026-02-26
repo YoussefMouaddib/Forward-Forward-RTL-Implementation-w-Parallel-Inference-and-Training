@@ -251,6 +251,7 @@ module tb_top;
         $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/samples_flat.mem", sample_mem);
         $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/labels.mem",       label_mem);
         $display("[TB] Samples loaded.");
+        $display("[TB] Samples loaded.");
     endtask
 
     // ─────────────────────────────────────────────
