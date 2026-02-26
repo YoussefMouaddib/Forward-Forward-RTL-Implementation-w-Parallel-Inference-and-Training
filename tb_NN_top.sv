@@ -248,8 +248,8 @@ module tb_top;
         // Load first NUM_SAMPLES images from full dataset mem file
         // Python should export samples_flat.mem with all pixels
         // in row-major order: s0p0, s0p1...s0p783, s1p0...
-        $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/samples_flat.mem", sample_mem);
-        $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/labels.mem",       label_mem);
+        $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/samples_flat.mem", sample_mem, 0, (NUM_SAMPLES * L1_INPUT_SIZE) - 1);
+        $readmemh("C:/Users/youss/Documents/Forward-Forward-RTL-Implementation-w-Parallel-Inference-and-Training/mem_files/labels.mem", label_mem, 0, NUM_SAMPLES - 1);
         $display("[TB] Samples loaded.");
         $display("[TB] Samples loaded.");
     endtask
